@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offers</title>
+</head>
+<body>
+    <h1>Current Offers</h1>
+
+    <div id="offerList"></div>
+
+    <script>
+        // offer.js - Client-side logic for offers
+
+        // Fetch active offers from the server
+        async function fetchOffers() {
+            const response = await fetch('get_offers.php');
+            const offers = await response.json();
+            return offers;
+        }
+
+        // Display offers on the page
+        async function displayOffers() {
+            const offers = await fetchOffers();
+            const offerListContainer = document.getElementById('offerList');
+
+            if (offers.length > 0) {
+                offers.forEach(offer => {
+                    const offerElement = document.createElement('div');
+                    offerElement.innerHTML = `
+                        <h3>${offer.title}</h3>
+                        <p>${offer.description}</p>
+                        <p>Discount: ${offer.discount_percentage}%</p>
+                        <p>Valid from ${offer.start_date} to ${offer.end_date}</p>
+                    `;
+                    offerListContainer.appendChild(offerElement);
+                });
+            } else {
+                offerListContainer.innerHTML = '<p>No active offers available.</p>';
+            }
+        }
+
+        // Call the displayOffers function when the page loads
+        window.onload = displayOffers;
+    </script>
+</body>
+</html>
